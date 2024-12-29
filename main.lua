@@ -112,10 +112,14 @@ end
 -- Player logic
 
 function updatePlayer(dt)
-  down = love.keyboard.isDown("down")
-  up = love.keyboard.isDown("up")
-  left = love.keyboard.isDown("left")
-  right = love.keyboard.isDown("right")
+  joystick = love.joystick.getJoysticks()[2]
+
+  down = love.keyboard.isDown("down") or (joystick and joystick:isGamepadDown("dpdown"))
+  up = love.keyboard.isDown("up") or (joystick and joystick:isGamepadDown("dpup"))
+  left = love.keyboard.isDown("left") or (joystick and joystick:isGamepadDown("dpleft"))
+  right = love.keyboard.isDown("right") or (joystick and joystick:isGamepadDown("dpright"))
+
+  shoot = love.keyboard.isDown("space") or (joystick and joystick:isGamepadDown("a"))
 
   speed = player.speed
   if((down or up) and (left or right)) then
@@ -138,7 +142,7 @@ function updatePlayer(dt)
     player.xPos = player.xPos - dt * speed
   end
 
-  if love.keyboard.isDown("space") then
+  if shoot then
     torpedoSpeed = torpedoStartSpeed
     if(left) then
       torpedoSpeed = torpedoSpeed - player.speed/2
